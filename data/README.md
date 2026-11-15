@@ -1,31 +1,27 @@
 # Datos oficiales del proyecto
 
-Trabajaremos con los registros de London Fire Brigade publicados en London Datastore. El periodo de análisis es del 1 de enero al 31 de diciembre de **2025**. Los archivos originales incluyen otros años; conservar el original y filtrar `CalYear=2025` en ambas fuentes al preparar el análisis.
+La carga final usa los incidentes y las movilizaciones de London Fire Brigade de 2021 a 2025. Los originales abarcan más años. El script selecciona el periodo con el campo `CalYear`.
 
-## Archivos para el estudio
-
-| Fuente | Descarga completa | Cobertura de la copia del grupo |
+| Archivo usado en la carga | Cobertura del original | Fuente |
 |---|---|---|
-| Movilizaciones | [Archivo oficial](https://data.london.gov.uk/download/24r65/7d5b4e2f-3ddb-48b9-8a4d-bf86bdf6a4ef/LFB%20Mobilisation%20data%20from%202025.csv) | 2025 a julio de 2026 |
-| Incidentes | [Archivo oficial](https://data.london.gov.uk/download/em8xy/58m/LFB%20Incident%20data%20from%202024%20onwards.xlsx) | 2024 a julio de 2026 |
+| [incidentes_2018_2023.xlsx](https://github.com/taniaa03/London/releases/download/datos-2021-2025/incidentes_2018_2023.xlsx) | 2018 a 2023 | [London Datastore](https://data.london.gov.uk/download/em8xy/f5066d66-c7a3-415f-9629-026fbda61822/LFB%20Incident%20data%20from%202018%20-%202023.xlsx) |
+| [incidentes_2024_hasta_julio_2026.xlsx](https://github.com/taniaa03/London/releases/download/datos-2021-2025/incidentes_2024_hasta_julio_2026.xlsx) | 2024 a julio de 2026 | [London Datastore](https://data.london.gov.uk/download/em8xy/58m/LFB%20Incident%20data%20from%202024%20onwards.xlsx) |
+| [movilizaciones_2021_2024.csv](https://github.com/taniaa03/London/releases/download/datos-2021-2025/movilizaciones_2021_2024.csv) | 2021 a 2024 | [London Datastore](https://data.london.gov.uk/download/24r65/3ff29fb5-3935-41b2-89f1-38571059237e/LFB%20Mobilisation%20data%20from%202021%20-%202024.csv) |
+| [movilizaciones_2025_hasta_julio_2026.csv](https://github.com/taniaa03/London/releases/download/datos-2021-2025/movilizaciones_2025_hasta_julio_2026.csv) | 2025 a julio de 2026 | [London Datastore](https://data.london.gov.uk/download/24r65/7d5b4e2f-3ddb-48b9-8a4d-bf86bdf6a4ef/LFB%20Mobilisation%20data%20from%202025.csv) |
 
-Catálogos oficiales: [Incident Records](https://data.london.gov.uk/dataset/london-fire-brigade-incident-records-em8xy) y [Mobilisation Records](https://data.london.gov.uk/dataset/london-fire-brigade-mobilisation-records-24r65).
+## Cargar los datos
 
-## Cómo preparar las copias locales
+1. Descarga los cuatro archivos de la primera columna y guárdalos con sus nombres en `data/originales/`.
+2. Crea la base vacía `LondonFireBrigadeDM` en SQL Server. El script se conecta a la instancia local `.\SQLEXPRESS` con autenticación de Windows y el controlador ODBC 18 de Microsoft.
+3. Desde la raíz del repositorio, instala las dependencias y ejecuta la carga.
 
-1. Descargar los dos archivos completos mediante los enlaces anteriores.
-2. Guardarlos en `data/raw/recientes/`, con los nombres indicados en el [manifest](manifest_descargas.json).
-3. Conservar los originales y aplicar el filtro `CalYear=2025` en la preparación del análisis.
-4. Consultar el [diccionario de fuentes](../docs/04_Diccionario_datos/Diccionario_fuentes.md) y las [reglas de enlace y agregación](../docs/05_Modelo_multidimensional/Modelo_multidimensional.md) antes de combinar los archivos. Un incidente puede tener varias movilizaciones.
+    ~~~powershell
+    python -m pip install "pandas>=2.2,<4" "pyodbc>=5,<6" "python-calamine>=0.2,<1"
+    python src/poblar_datamart.py
+    ~~~
 
-## Diccionarios oficiales y trazabilidad
+[Script de carga](../src/poblar_datamart.py) · [Diccionario de fuentes](../docs/04_Diccionario_datos/Diccionario_fuentes.md) · [Historial de descargas](manifest_descargas.json)
 
-- [Metadatos de incidentes](../docs/04_Diccionario_datos/metadatos/diccionario_incidentes.xlsx).
-- [Metadatos de movilizaciones](../docs/04_Diccionario_datos/metadatos/diccionario_movilizaciones.xlsx).
-- [Manifest de descargas](manifest_descargas.json): URL, tamaño, SHA-256, fecha de descarga y ubicación prevista para cada archivo. Incluye descargas históricas como respaldo; no amplían el alcance del estudio.
-
-Los tamaños y hashes describen las copias descargadas por el grupo el 24 de septiembre de 2026. El proveedor puede actualizar los archivos de esos mismos enlaces; una descarga posterior puede tener otro contenido y otro hash. La copia original descargada se conserva localmente para mantener el corte del estudio.
+Metadatos de [incidentes](../docs/04_Diccionario_datos/metadatos/diccionario_incidentes.xlsx) y [movilizaciones](../docs/04_Diccionario_datos/metadatos/diccionario_movilizaciones.xlsx).
 
 Source: London Fire Brigade / London Datastore. Contains public sector information licensed under the [Open Government Licence v2.0](https://www.nationalarchives.gov.uk/doc/open-government-licence/version/2/).
-
-[Volver al informe](../README.md).

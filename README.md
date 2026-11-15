@@ -78,9 +78,9 @@ London Fire Brigade (LFB) es el servicio de bomberos y rescate de Londres. Combi
 
 ### 3.3. Fuentes de datos
 
-Utilizaremos los registros abiertos oficiales de [incidentes](https://data.london.gov.uk/dataset/london-fire-brigade-incident-records-em8xy) y [movilizaciones](https://data.london.gov.uk/dataset/london-fire-brigade-mobilisation-records-24r65), publicados por LFB en London Datastore. Trabajaremos con la descarga del 24 de septiembre de 2026 y seleccionaremos el año 2025, que está completo en ambos archivos.
+Usamos cuatro archivos originales de London Fire Brigade publicados en London Datastore, dos de incidentes y dos de movilizaciones. La [carga final del datamart](src/poblar_datamart.py) selecciona los años completos de 2021 a 2025 mediante CalYear.
 
-La fuente de incidentes describe cada atención; la de movilizaciones, cada recurso desplegado. Las relacionaremos mediante IncidentNumber.
+La fuente de incidentes describe cada atención y la de movilizaciones, cada recurso desplegado. Relacionamos ambos registros mediante IncidentNumber y el año de origen. Las descargas y los pasos para reproducir la carga están en [Datos oficiales](data/README.md).
 
 ## 4. Marco teórico
 
