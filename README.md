@@ -371,7 +371,7 @@ SQL Server en la nube (MonsterASP)
 
 ## 9. Acceso a la base de datos:
 
-[Ver base de datos](db80008.public.databaseasp.net/)
+db80008.public.databaseasp.net/
 
     Server=db80008.public.databaseasp.net
     Database=db80008
