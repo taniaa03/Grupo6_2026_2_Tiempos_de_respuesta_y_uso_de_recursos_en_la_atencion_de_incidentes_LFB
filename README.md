@@ -19,7 +19,7 @@ LFB tiene como meta que la primera autobomba llegue en un promedio de seis minut
 
 Cada incidente requiere un despliegue distinto. LFB registra las unidades participantes, los minutos de autobomba y un costo nocional que estima el esfuerzo de la atención mediante una tarifa estándar (LFB, 2022). Las falsas alarmas también utilizan estos recursos, por lo que interesa conocer dónde se concentran y qué tipos de inmueble están asociados a ellas.
 
-Analizaremos las atenciones de 2025 para identificar qué zonas y tipos de incidentes requieren una revisión operativa y dónde conviene investigar las causas de las falsas alarmas. Utilizaremos los registros de incidentes y movilizaciones publicados por LFB en London Datastore (LFB, 2026a, 2026b).
+Analizaremos las atenciones del periodo 2021–2025 para identificar qué zonas y tipos de incidentes requieren una revisión operativa y dónde conviene investigar las causas de las falsas alarmas. Utilizaremos los registros de incidentes y movilizaciones publicados por LFB en London Datastore (LFB, 2026a, 2026b).
 
 ## 2. Planteamiento de la problemática
 
@@ -31,11 +31,11 @@ Compararemos los tiempos de salida, viaje y llegada, los motivos de demora y los
 
 ### 2.2. Pregunta central de negocio
 
-¿Qué zonas y tipos de atención debería priorizar la London Fire Brigade para revisar su respuesta operativa y orientar acciones preventivas, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados durante 2025?
+¿Qué zonas y tipos de atención debería priorizar la London Fire Brigade para revisar su respuesta operativa y orientar acciones preventivas, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados durante el periodo 2021–2025?
 
 ### 2.3. Objetivos
 
-**Objetivo general:** analizar la atención de incidentes de LFB durante 2025, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados, para fundamentar qué zonas y tipos de atención deberían priorizarse para revisión operativa y orientación de acciones preventivas.
+**Objetivo general:** analizar la atención de incidentes de LFB durante el periodo 2021–2025, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados, para fundamentar qué zonas y tipos de atención deberían priorizarse para revisión operativa y orientación de acciones preventivas.
 
 **Objetivos específicos:**
 
@@ -52,7 +52,7 @@ Compararemos los tiempos de salida, viaje y llegada, los motivos de demora y los
 | Aspecto | Delimitación |
 |---|---|
 | Institución | London Fire Brigade. |
-| Periodo | Del 1 de enero al 31 de diciembre de 2025, mediante CalYear=2025 en ambas fuentes. |
+| Periodo | Del 1 de enero de 2021 al 31 de diciembre de 2025, mediante CalYear entre 2021 y 2025 en ambas fuentes. |
 | Proceso | Atención operativa de incidentes; tiempos desde movilización hasta llegada y recursos asociados a la intervención. |
 | Tipos de atención | Incendios, falsas alarmas y servicios especiales. |
 | Territorio | Borough como nivel principal; ward y distrito postal para detalle cuando corresponda. |
@@ -78,9 +78,9 @@ London Fire Brigade (LFB) es el servicio de bomberos y rescate de Londres. Combi
 
 ### 3.3. Fuentes de datos
 
-Usamos cuatro archivos originales de London Fire Brigade publicados en London Datastore, dos de incidentes y dos de movilizaciones. La [carga final del datamart](src/poblar_datamart.py) selecciona los años completos de 2021 a 2025 mediante CalYear.
+Utilizaremos los registros abiertos oficiales de [incidentes](https://data.london.gov.uk/dataset/london-fire-brigade-incident-records-em8xy) y [movilizaciones](https://data.london.gov.uk/dataset/london-fire-brigade-mobilisation-records-24r65), publicados por LFB en London Datastore. Trabajaremos con la descarga del 24 de septiembre de 2026 y seleccionaremos los años 2021 a 2025, que están completos en ambos archivos.
 
-La fuente de incidentes describe cada atención y la de movilizaciones, cada recurso desplegado. Relacionamos ambos registros mediante IncidentNumber y el año de origen. Las descargas y los pasos para reproducir la carga están en [Datos oficiales](data/README.md).
+La fuente de incidentes describe cada atención; la de movilizaciones, cada recurso desplegado. Las relacionaremos mediante IncidentNumber.
 
 ## 4. Marco teórico
 
@@ -138,8 +138,8 @@ Diseñamos el modelo con dos tablas de hechos: una para cada incidente y otra pa
 
 | Tabla de hechos | Qué representa una fila | Qué permite analizar |
 |---|---|---|
-| FactIncidente | Un incidente publicado con CalYear=2025, identificado por IncidentNumber. | Demanda atendida, primera y segunda llegada publicadas, autobombas, estaciones participantes, minutos redondeados, llamadas y costo nocional de la atención. |
-| FactMovilizacion | Una movilización válida de un recurso con CalYear=2025, identificada por ResourceMobilisationId. | Tiempo de salida, viaje y llegada de cada unidad, estación de despliegue, contexto de salida y motivo de demora reportado. |
+| FactIncidente | Un incidente publicado con CalYear entre 2021 y 2025, identificado por IncidentNumber. | Demanda atendida, primera y segunda llegada publicadas, autobombas, estaciones participantes, minutos redondeados, llamadas y costo nocional de la atención. |
+| FactMovilizacion | Una movilización válida de un recurso con CalYear entre 2021 y 2025, identificada por ResourceMobilisationId. | Tiempo de salida, viaje y llegada de cada unidad, estación de despliegue, contexto de salida y motivo de demora reportado. |
 
 Las falsas alarmas se identifican mediante DimTipoIncidente.Grupo=False Alarm, al mismo nivel de detalle que los incendios y servicios especiales. El costo nocional se mantiene solo en FactIncidente; repetirlo en cada movilización multiplicaría el costo del incidente.
 
@@ -210,7 +210,7 @@ Los diagramas muestran los campos, las claves y las relaciones 1:N. La especific
 
 | Uso del análisis | Universo y regla |
 |---|---|
-| Describir toda la demanda de 2025 | FactIncidente completo, incluidos incidentes sin movilización enlazada en la descarga. |
+| Describir toda la demanda de 2021–2025 | FactIncidente completo, incluidos incidentes sin movilización enlazada en la descarga. |
 | Comparar tiempos y recursos de las mismas atenciones | FactIncidente con TieneMovilizacion=1 y FactMovilizacion con TieneIncidente=1. Ambos controles se calculan después de depurar las movilizaciones. |
 | Describir movilizaciones sin incidente enlazado | Mantenerlas identificadas para revisión de cobertura. No atribuirles zona, propiedad ni tipo de incidente sin respaldo. |
 
@@ -220,7 +220,7 @@ Los filtros de estación, origen y demora se aplican a FactMovilizacion. El cost
 
 ### 6.9. Selección de campos
 
-Conservamos PumpOrder, PlusCode_Code y PlusCode_Description en las fuentes, sin incorporarlos al modelo. El primero no define con precisión el orden de llegada; los otros dos solo distinguen Initial / Initial Mobilisation en 2025. PumpCount queda fuera de las medidas por falta de definición suficiente. El tiempo de retorno tampoco se usa por su escasa cobertura.
+Conservamos PumpOrder, PlusCode_Code y PlusCode_Description en las fuentes, sin incorporarlos al modelo. El primero no define con precisión el orden de llegada; los otros dos solo distinguen Initial / Initial Mobilisation en el periodo 2021–2025. PumpCount queda fuera de las medidas por falta de definición suficiente. El tiempo de retorno tampoco se usa por su escasa cobertura.
 
 ### 6.10. Diccionario del modelo
 
@@ -229,7 +229,7 @@ Conservamos PumpOrder, PlusCode_Code y PlusCode_Description en las fuentes, sin 
 
 #### DimFecha
 
-Un día calendario; 365 días de 2025 y miembro desconocido.
+Un día calendario; 1,826 días del periodo 2021–2025 y miembro desconocido.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -310,13 +310,13 @@ Un código de motivo reportado.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
-| MotivoDemoraKey | int | PK | Sin IDENTITY. Valor entero de DelayCodeId, validado como código numérico positivo en 2025; 0 para desconocido. Codigo conserva el valor original como texto. |
+| MotivoDemoraKey | int | PK | Sin IDENTITY. Valor entero de DelayCodeId, validado como código numérico positivo en el periodo 2021–2025; 0 para desconocido. Codigo conserva el valor original como texto. |
 | Codigo | nvarchar(30) | Atributo | DelayCodeId; conservar como texto. |
 | Descripcion | nvarchar(200) | Atributo | DelayCode_Description. Not held up es ausencia explícita de demora; vacío es Desconocido. |
 
 #### FactIncidente
 
-Una fila por IncidentNumber en CalYear=2025.
+Una fila por IncidentNumber con CalYear entre 2021 y 2025.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -333,11 +333,11 @@ Una fila por IncidentNumber en CalYear=2025.
 | MinutosBombaRedondeados | int | Medida | PumpMinutesRounded; tiempo de bombas en el incidente, redondeado a 60 minutos si es inferior a una hora según metadatos. No duración exacta ni horas-persona. |
 | CostoNocionalGBP | decimal(18,2) | Medida | Notional Cost (£); estimación nocional en GBP, no gasto contable. |
 | NumLlamadas | int | Medida | NumCalls; llamadas asociadas al incidente. |
-| TieneMovilizacion | bit | Control de enlace | 1 si existe al menos una movilización válida de 2025 con el mismo IncidentNumber después de deduplicar y separar conflictos; 0 en otro caso. No mide si el incidente recibió atención real. |
+| TieneMovilizacion | bit | Control de enlace | 1 si existe al menos una movilización válida del periodo 2021–2025 con el mismo IncidentNumber después de deduplicar y separar conflictos; 0 en otro caso. No mide si el incidente recibió atención real. |
 
 #### FactMovilizacion
 
-Una fila por ResourceMobilisationId de CalYear=2025 aceptado tras deduplicar y separar versiones contradictorias.
+Una fila por ResourceMobilisationId con CalYear entre 2021 y 2025 aceptado tras deduplicar y separar versiones contradictorias.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -357,9 +357,17 @@ Una fila por ResourceMobilisationId de CalYear=2025 aceptado tras deduplicar y s
 | SalidaSeg | int | Medida | TurnoutTimeSeconds; segundos desde movilización hasta salida. |
 | ViajeSeg | int | Medida | TravelTimeSeconds; segundos desde salida hasta llegada. |
 | LlegadaSeg | int | Medida | AttendanceTimeSeconds; segundos publicados desde movilización hasta llegada. No es duración de la intervención. |
-| TieneIncidente | bit | Atributo / control | 1 si IncidentNumber encuentra fila en el universo 2025 de incidentes, 0 si no. |
+| TieneIncidente | bit | Atributo / control | 1 si IncidentNumber encuentra fila en el universo 2021–2025 de incidentes, 0 si no. |
 
 </details>
+
+## 7. Dashboard interactivo
+
+[Ver aplicación en vivo](https://london-qplh.onrender.com/ )
+
+## 8. Motor de Base de Dato
+
+SQL Server en la nube (MonsterASP)
 
 ## 7. Referencias
 

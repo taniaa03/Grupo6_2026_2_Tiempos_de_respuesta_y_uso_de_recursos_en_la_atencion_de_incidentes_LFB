@@ -6,8 +6,8 @@ Diseñamos el modelo con dos tablas de hechos: una para cada incidente y otra pa
 
 | Tabla de hechos | Qué representa una fila | Qué permite analizar |
 |---|---|---|
-| FactIncidente | Un incidente publicado con CalYear=2025, identificado por IncidentNumber. | Demanda atendida, primera y segunda llegada publicadas, autobombas, estaciones participantes, minutos redondeados, llamadas y costo nocional de la atención. |
-| FactMovilizacion | Una movilización válida de un recurso con CalYear=2025, identificada por ResourceMobilisationId. | Tiempo de salida, viaje y llegada de cada unidad, estación de despliegue, contexto de salida y motivo de demora reportado. |
+| FactIncidente | Un incidente publicado con CalYear entre 2021 y 2025, identificado por IncidentNumber. | Demanda atendida, primera y segunda llegada publicadas, autobombas, estaciones participantes, minutos redondeados, llamadas y costo nocional de la atención. |
+| FactMovilizacion | Una movilización válida de un recurso con CalYear entre 2021 y 2025, identificada por ResourceMobilisationId. | Tiempo de salida, viaje y llegada de cada unidad, estación de despliegue, contexto de salida y motivo de demora reportado. |
 
 Las falsas alarmas se identifican mediante DimTipoIncidente.Grupo=False Alarm, al mismo nivel de detalle que los incendios y servicios especiales. El costo nocional se mantiene solo en FactIncidente; repetirlo en cada movilización multiplicaría el costo del incidente.
 
@@ -78,7 +78,7 @@ Los diagramas muestran los campos, las claves y las relaciones 1:N. La especific
 
 | Uso del análisis | Universo y regla |
 |---|---|
-| Describir toda la demanda de 2025 | FactIncidente completo, incluidos incidentes sin movilización enlazada en la descarga. |
+| Describir toda la demanda de 2021–2025 | FactIncidente completo, incluidos incidentes sin movilización enlazada en la descarga. |
 | Comparar tiempos y recursos de las mismas atenciones | FactIncidente con TieneMovilizacion=1 y FactMovilizacion con TieneIncidente=1. Ambos controles se calculan después de depurar las movilizaciones. |
 | Describir movilizaciones sin incidente enlazado | Mantenerlas identificadas para revisión de cobertura. No atribuirles zona, propiedad ni tipo de incidente sin respaldo. |
 
@@ -88,6 +88,6 @@ Los filtros de estación, origen y demora se aplican a FactMovilizacion. El cost
 
 ## 6.9. Selección de campos
 
-Conservamos PumpOrder, PlusCode_Code y PlusCode_Description en las fuentes, sin incorporarlos al modelo. El primero no define con precisión el orden de llegada; los otros dos solo distinguen Initial / Initial Mobilisation en 2025. PumpCount queda fuera de las medidas por falta de definición suficiente. El tiempo de retorno tampoco se usa por su escasa cobertura.
+Conservamos PumpOrder, PlusCode_Code y PlusCode_Description en las fuentes, sin incorporarlos al modelo. El primero no define con precisión el orden de llegada; los otros dos solo distinguen Initial / Initial Mobilisation en el periodo 2021–2025. PumpCount queda fuera de las medidas por falta de definición suficiente. El tiempo de retorno tampoco se usa por su escasa cobertura.
 
 [Volver al informe principal](../../README.md) · [Documentos](../README.md).

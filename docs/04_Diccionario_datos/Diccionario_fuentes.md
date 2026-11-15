@@ -10,7 +10,7 @@ El CSV adjunto conserva también las descripciones y notas originales del provee
 |---|---|---|---|
 | IncidentNumber | Texto | No aplica | Identificador de incidente; unión entre fuentes; mantener como texto. |
 | DateOfCall | Fecha | Día calendario | Fecha publicada de llamada/registro; base de DimFecha. |
-| CalYear | Entero | Año | Año publicado; filtro común CalYear=2025 y control con DateOfCall. |
+| CalYear | Entero | Año | Año publicado; filtro común CalYear entre 2021 y 2025 y control con DateOfCall. |
 | TimeOfCall | Hora | hh:mm:ss publicado | Hora detallada publicada; conservar en respaldo de origen para control, no emplear para calcular duraciones. |
 | HourOfCall | Entero | Hora 0–23 | Hora publicada 0–23; base de DimHora. |
 | IncidentGroup | Texto | No aplica | Grupo del incidente; DimTipoIncidente. La categoría False Alarm permite filtrar falsas alarmas en ambos hechos. |
@@ -53,7 +53,7 @@ El CSV adjunto conserva también las descripciones y notas originales del provee
 | Campo | Tipo de referencia | Unidad / formato | Definición y uso |
 |---|---|---|---|
 | IncidentNumber | Texto | No aplica | Identificador de incidente; unión entre fuentes; mantener como texto. |
-| CalYear | Entero | Año | Año publicado; filtro común CalYear=2025 y control con DateOfCall. |
+| CalYear | Entero | Año | Año publicado; filtro común CalYear entre 2021 y 2025 y control con DateOfCall. |
 | BoroughName | Texto | No aplica | Nombre de borough observado en CSV, ausente del diccionario de movilizaciones; control contra incidentes, sin enriquecer huérfanos con geografía parcial. |
 | WardName | Texto | No aplica | Nombre de ward observado en CSV, ausente del diccionario de movilizaciones; control contra incidentes. |
 | HourOfCall | Entero | Hora 0–23 | Hora publicada 0–23; base de DimHora. |
@@ -72,8 +72,8 @@ El CSV adjunto conserva también las descripciones y notas originales del provee
 | DeployedFromStation_Name | Texto | No aplica | Nombre de estación de despliegue; DimEstacion. |
 | DeployedFromLocation | Texto | No aplica | Origen operativo Home Station / Other Station; DimOrigenDespliegue. |
 | PumpOrder | Entero | Conteo / orden | Orden publicado como Pump order; el diccionario no precisa despacho o llegada. Respaldo de origen, fuera del modelo analítico; no se usa para identificar primer arribo. |
-| PlusCode_Code | Texto | No aplica | Código del tipo de movilización; respaldo de origen. Constante Initial en 2025, fuera del modelo analítico. |
-| PlusCode_Description | Texto | No aplica | Descripción del tipo de movilización; respaldo de origen. Constante Initial Mobilisation en 2025, fuera del modelo analítico. |
+| PlusCode_Code | Texto | No aplica | Código del tipo de movilización; respaldo de origen. Constante Initial en el periodo 2021–2025, fuera del modelo analítico. |
+| PlusCode_Description | Texto | No aplica | Descripción del tipo de movilización; respaldo de origen. Constante Initial Mobilisation en el periodo 2021–2025, fuera del modelo analítico. |
 | DelayCodeId | Texto | No aplica | Código de demora; DimMotivoDemora. |
 | DelayCode_Description | Texto | No aplica | Descripción de demora; DimMotivoDemora. |
 
@@ -99,7 +99,7 @@ El CSV adjunto conserva también las descripciones y notas originales del provee
 
 ## Categorías de falsas alarmas
 
-Se filtra primero IncidentGroup=False Alarm y después se utiliza StopCodeDescription. En la descarga de 2025 se observaron estas etiquetas:
+Se filtra primero IncidentGroup=False Alarm y después se utiliza StopCodeDescription. En el periodo 2021–2025 se observaron estas etiquetas:
 
 | Etiqueta publicada | Interpretación y límite |
 |---|---|

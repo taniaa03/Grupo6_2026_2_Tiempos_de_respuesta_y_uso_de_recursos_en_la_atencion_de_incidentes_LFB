@@ -8,11 +8,11 @@ Compararemos los tiempos de salida, viaje y llegada, los motivos de demora y los
 
 ## 2.2. Pregunta central de negocio
 
-¿Qué zonas y tipos de atención debería priorizar la London Fire Brigade para revisar su respuesta operativa y orientar acciones preventivas, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados durante 2025?
+¿Qué zonas y tipos de atención debería priorizar la London Fire Brigade para revisar su respuesta operativa y orientar acciones preventivas, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados durante el periodo 2021–2025?
 
 ## 2.3. Objetivos
 
-**Objetivo general:** analizar la atención de incidentes de LFB durante 2025, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados, para fundamentar qué zonas y tipos de atención deberían priorizarse para revisión operativa y orientación de acciones preventivas.
+**Objetivo general:** analizar la atención de incidentes de LFB durante el periodo 2021–2025, considerando los tiempos de llegada, las demoras reportadas y los recursos utilizados, para fundamentar qué zonas y tipos de atención deberían priorizarse para revisión operativa y orientación de acciones preventivas.
 
 **Objetivos específicos:**
 
@@ -29,7 +29,7 @@ Compararemos los tiempos de salida, viaje y llegada, los motivos de demora y los
 | Aspecto | Delimitación |
 |---|---|
 | Institución | London Fire Brigade. |
-| Periodo | Del 1 de enero al 31 de diciembre de 2025, mediante CalYear=2025 en ambas fuentes. |
+| Periodo | Del 1 de enero de 2021 al 31 de diciembre de 2025, mediante CalYear entre 2021 y 2025 en ambas fuentes. |
 | Proceso | Atención operativa de incidentes; tiempos desde movilización hasta llegada y recursos asociados a la intervención. |
 | Tipos de atención | Incendios, falsas alarmas y servicios especiales. |
 | Territorio | Borough como nivel principal; ward y distrito postal para detalle cuando corresponda. |

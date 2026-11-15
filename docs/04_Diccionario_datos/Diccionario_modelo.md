@@ -4,7 +4,7 @@ Tipos de datos, claves y reglas de transformación de los campos del modelo.
 
 ## DimFecha
 
-Un día calendario; 365 días de 2025 y miembro desconocido.
+Un día calendario; 1,826 días del periodo 2021–2025 y miembro desconocido.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -85,13 +85,13 @@ Un código de motivo reportado.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
-| MotivoDemoraKey | int | PK | Sin IDENTITY. Valor entero de DelayCodeId, validado como código numérico positivo en 2025; 0 para desconocido. Codigo conserva el valor original como texto. |
+| MotivoDemoraKey | int | PK | Sin IDENTITY. Valor entero de DelayCodeId, validado como código numérico positivo en el periodo 2021–2025; 0 para desconocido. Codigo conserva el valor original como texto. |
 | Codigo | nvarchar(30) | Atributo | DelayCodeId; conservar como texto. |
 | Descripcion | nvarchar(200) | Atributo | DelayCode_Description. Not held up es ausencia explícita de demora; vacío es Desconocido. |
 
 ## FactIncidente
 
-Una fila por IncidentNumber en CalYear=2025.
+Una fila por IncidentNumber con CalYear entre 2021 y 2025.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -108,11 +108,11 @@ Una fila por IncidentNumber en CalYear=2025.
 | MinutosBombaRedondeados | int | Medida | PumpMinutesRounded; tiempo de bombas en el incidente, redondeado a 60 minutos si es inferior a una hora según metadatos. No duración exacta ni horas-persona. |
 | CostoNocionalGBP | decimal(18,2) | Medida | Notional Cost (£); estimación nocional en GBP, no gasto contable. |
 | NumLlamadas | int | Medida | NumCalls; llamadas asociadas al incidente. |
-| TieneMovilizacion | bit | Control de enlace | 1 si existe al menos una movilización válida de 2025 con el mismo IncidentNumber después de deduplicar y separar conflictos; 0 en otro caso. No mide si el incidente recibió atención real. |
+| TieneMovilizacion | bit | Control de enlace | 1 si existe al menos una movilización válida del periodo 2021–2025 con el mismo IncidentNumber después de deduplicar y separar conflictos; 0 en otro caso. No mide si el incidente recibió atención real. |
 
 ## FactMovilizacion
 
-Una fila por ResourceMobilisationId de CalYear=2025 aceptado tras deduplicar y separar versiones contradictorias.
+Una fila por ResourceMobilisationId con CalYear entre 2021 y 2025 aceptado tras deduplicar y separar versiones contradictorias.
 
 | Campo | Tipo de dato | Rol | Definición y transformación |
 |---|---|---|---|
@@ -132,7 +132,7 @@ Una fila por ResourceMobilisationId de CalYear=2025 aceptado tras deduplicar y s
 | SalidaSeg | int | Medida | TurnoutTimeSeconds; segundos desde movilización hasta salida. |
 | ViajeSeg | int | Medida | TravelTimeSeconds; segundos desde salida hasta llegada. |
 | LlegadaSeg | int | Medida | AttendanceTimeSeconds; segundos publicados desde movilización hasta llegada. No es duración de la intervención. |
-| TieneIncidente | bit | Atributo / control | 1 si IncidentNumber encuentra fila en el universo 2025 de incidentes, 0 si no. |
+| TieneIncidente | bit | Atributo / control | 1 si IncidentNumber encuentra fila en el universo 2021–2025 de incidentes, 0 si no. |
 
 ## Reglas comunes
 
