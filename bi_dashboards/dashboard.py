@@ -628,8 +628,19 @@ def concentracion_falsas_alarmas(meses, borough):
 
 
 def panel_consultas():
+    url_diagrama = 'diagrama-datamart.png'
     return html.Section([
         html.H2('Consultas SQL', id='sql-titulo'),
+        html.Figure([
+            html.Img(
+                src=url_diagrama, width=2472, height=1592,
+                alt='Modelo multidimensional con las tablas de incidentes y movilizaciones y sus dimensiones.',
+            ),
+            html.Figcaption(html.A(
+                'Ver diagrama a tamaño completo', href=url_diagrama,
+                target='_blank', rel='noopener', className='enlace-esquema',
+            )),
+        ], className='sql-diagrama'),
         html.Div([
             html.Div([
                 html.Label('Consulta T-SQL', htmlFor='sql-editor'),
@@ -699,6 +710,12 @@ def descargar_diccionario():
     archivo = RAIZ / 'docs' / '04_Diccionario_datos' / 'Diccionario_modelo.md'
     return send_file(archivo, mimetype='text/plain; charset=utf-8', as_attachment=True,
                      download_name='Diccionario_modelo.md')
+
+
+@server.get('/diagrama-datamart.png')
+def mostrar_diagrama_datamart():
+    archivo = RAIZ / 'docs' / '05_Modelo_multidimensional' / 'Modelo_multidimensional.png'
+    return send_file(archivo, mimetype='image/png')
 
 
 def panel_atenciones():

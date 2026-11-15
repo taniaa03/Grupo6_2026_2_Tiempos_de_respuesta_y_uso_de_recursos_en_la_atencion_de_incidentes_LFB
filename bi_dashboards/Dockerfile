@@ -18,6 +18,7 @@ COPY bi_dashboards/perfil_incidentes.py ./
 COPY bi_dashboards/assets ./assets
 COPY data/README.md /app/data/README.md
 COPY docs/04_Diccionario_datos/Diccionario_modelo.md /app/docs/04_Diccionario_datos/Diccionario_modelo.md
+COPY docs/05_Modelo_multidimensional/Modelo_multidimensional.png /app/docs/05_Modelo_multidimensional/Modelo_multidimensional.png
 
 ENV PYTHONUNBUFFERED=1 PORT=8050
 EXPOSE 8050
