@@ -363,13 +363,20 @@ Una fila por ResourceMobilisationId con CalYear entre 2021 y 2025 aceptado tras 
 
 ## 7. Dashboard interactivo
 
-[Ver aplicación en vivo](https://london-qplh.onrender.com/ )
+[Ver aplicación en vivo](https://london-qplh.onrender.com/)
 
-## 8. Motor de Base de Dato
+## 8. Motor de Base de Datos
 
 SQL Server en la nube (MonsterASP)
 
-## 7. Referencias
+## 9. Enlace a base de datos:
+
+
+## 10. Presentación (PPT):
+
+[Ver canva](https://canva.link/9hl7zsw57du9cik)
+
+## 11. Referencias
 
 Greater London Authority. (2025, 16 de enero). Fire response times (3) (Pregunta n.º 2025/0167) [Respuesta a pregunta al alcalde]. London City Hall. [Enlace a la fuente](https://www.london.gov.uk/who-we-are/what-london-assembly-does/questions-mayor/find-an-answer/fire-response-times-3)
 
