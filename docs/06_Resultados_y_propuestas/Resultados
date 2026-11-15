@@ -1,0 +1,116 @@
+## 7. Resultados
+
+Primero se presenta la evolución del periodo 2021–2025, a partir de los recuentos del dashboard. Después se analiza en detalle 2025, el año completo más reciente, mediante consultas SQL sobre el datamart en MonsterASP (137 981 incidentes y 206 682 movilizaciones válidas). Los tiempos de llegada se calculan sobre incidentes con movilización enlazada (TieneMovilizacion=1) y con valor informado. Las medidas de recursos y costo se obtienen exclusivamente de FactIncidente.
+
+### 7.1. Evolución 2021–2025
+
+| Año | Incidentes | Falsas alarmas | % falsas alarmas | Movilizaciones | Movilizaciones sin incidente asociado |
+|---|---|---|---|---|---|
+| 2021 | 109 577 | 53 474 | 48,8 % | 159 086 | 664 |
+| 2022 | 125 392 | 59 403 | 47,4 % | 180 166 | 782 |
+| 2023 | 126 114 | 62 792 | 49,8 % | 186 339 | 1 242 |
+| 2024 | 134 123 | 64 810 | 48,3 % | 198 283 | 607 |
+| 2025 | 137 981 | 61 751 | 44,8 % | 206 682 | 799 |
+| **Total** | **633 187** | **302 230** | **47,7 %** | **930 556** | **4 094** |
+
+Entre 2021 y 2025 los incidentes atendidos crecieron 25,9 % y las movilizaciones, 29,9 %. Como las movilizaciones crecieron más rápido, cada atención moviliza en promedio un poco más de recursos (de 1,45 a 1,50 movilizaciones por incidente). Las falsas alarmas representaron casi la mitad de las atenciones del periodo (47,7 %). En 2025 disminuyeron por primera vez en números absolutos (−4,7 % frente a 2024) y su proporción bajó a 44,8 %, la más baja del periodo.
+
+El tiempo promedio de primera llegada del periodo fue de 5,33 minutos (unos 320 s, sobre 597 922 incidentes con valor registrado), mientras que en 2025 fue de unos 329 s. La demanda alcanza su punto más alto los sábados entre las 19:00 y las 19:59 (5 588 incidentes en el periodo). Los incendios muestran picos en los meses de verano, especialmente a mediados de 2022.
+
+### 7.2. Caracterización de la demanda en 2025 (objetivo 1)
+
+| Tipo de atención | Incidentes | % |
+|---|---|---|
+| Falsas alarmas | 61 751 | 44,8 % |
+| Servicios especiales | 56 565 | 41,0 % |
+| Incendios | 19 644 | 14,2 % |
+| Desconocido | 21 | 0,0 % |
+| **Total** | **137 981** | **100 %** |
+
+Casi la mitad de las atenciones de 2025 fueron falsas alarmas, mientras que los incendios representaron una de cada siete. La demanda se concentró en la tarde (12–17 h: 44 923 incidentes) y la noche (18–23 h: 44 115), que juntas suman el 64,5 % del año. La madrugada (0–5 h) registró 20 130 incidentes y la mañana (6–11 h), 28 813.
+
+### 7.3. Tiempos de respuesta y demoras en 2025 (objetivo 2)
+
+**Por tipo de atención** (tiempo de primera autobomba, desde la movilización):
+
+| Tipo | Incidentes con tiempo | Promedio (s) | Mediana (s) |
+|---|---|---|---|
+| Falsas alarmas | 61 211 | 316 | 297 |
+| Servicios especiales | 49 981 | 338 | 320 |
+| Incendios | 19 402 | 344 | 320 |
+
+El promedio ponderado es de aproximadamente 329 segundos, coherente con el valor reportado por la London Assembly Research Unit (2026). Los incendios y servicios especiales presentan tiempos mayores que las falsas alarmas.
+
+**Por franja horaria:** la tarde combina la mayor demanda con el mayor tiempo promedio (344 s), frente a 315 s en la noche, 325 s en la mañana y 328 s en la madrugada.
+
+**Por borough** (mínimo 500 incidentes con tiempo):
+
+| Mayor tiempo promedio | Promedio (s) | Mediana (s) | | Menor tiempo promedio | Promedio (s) |
+|---|---|---|---|---|---|
+| Hillingdon | 386 | 368 | | Kensington and Chelsea | 277 |
+| Bromley | 375 | 356 | | Lambeth | 284 |
+| Havering | 371 | 342 | | Tower Hamlets | 292 |
+| Enfield | 370 | 347 | | City of London | 292 |
+| Redbridge | 367 | 346 | | Hammersmith and Fulham | 303 |
+| Richmond upon Thames | 364 | 347 | | | |
+| Barking and Dagenham | 360 | 339 | | | |
+| Bexley | 352 | 333 | | | |
+
+Los boroughs con mayores tiempos son periféricos, y los más rápidos son céntricos. Entre Hillingdon y Kensington and Chelsea hay una diferencia de 109 segundos en el promedio. Seis boroughs superan los 360 segundos de promedio. Esto no constituye un incumplimiento, porque la meta de LFB es un promedio para todo Londres y una comparación formal requeriría reproducir sus criterios de inclusión, pero sí indica dónde se concentran los tiempos más altos.
+
+**Motivos de demora reportados** (205 883 movilizaciones con incidente enlazado):
+
+| Motivo | Movilizaciones | % del total |
+|---|---|---|
+| Desconocido (sin registro) | 149 154 | 72,4 % |
+| Not held up (sin demora) | 35 337 | 17,2 % |
+| Tráfico / obras viales | 13 226 | 6,4 % |
+| Reductores de velocidad | 4 326 | 2,1 % |
+| Dirección incompleta | 1 983 | 1,0 % |
+| Otros | < 1 % c/u | |
+
+El 72,4 % de las movilizaciones no tiene motivo registrado, lo que limita el análisis de las demoras. Entre las 56 729 que sí lo tienen, el tráfico y los reductores de velocidad explican cerca del 31 %. Estos motivos contextualizan el desplazamiento, pero no expresan cuántos segundos se perdieron por cada uno.
+
+### 7.4. Recursos utilizados en 2025 (objetivo 3)
+
+| Tipo | Incidentes | Autobombas promedio | Minutos de autobomba | Costo nocional (£) | % del costo |
+|---|---|---|---|---|---|
+| Falsas alarmas | 61 751 | 1,97 | 3 900 297 | 29 795 401 | 37,0 % |
+| Servicios especiales | 56 565 | 1,10 | 3 801 547 | 29 035 041 | 36,1 % |
+| Incendios | 19 644 | 1,62 | 2 826 683 | 21 645 031 | 26,9 % |
+
+Las falsas alarmas concentran la mayor parte del costo nocional (37,0 %) y movilizan en promedio casi dos autobombas, más que los incendios, porque se atienden como un posible incendio hasta confirmar lo contrario. Por incidente, en cambio, un incendio cuesta en promedio unas £1 102, frente a £482 de una falsa alarma. El costo nocional es una estimación del esfuerzo con una tarifa estándar, no un gasto real ni un ahorro recuperable. Además, los minutos se redondean a 60 cuando la atención dura menos de una hora, lo que eleva el valor de las atenciones breves.
+
+### 7.5. Concentración de falsas alarmas en 2025 (objetivo 4)
+
+**Por categoría:**
+
+| Categoría | Falsas alarmas | % |
+|---|---|---|
+| AFA (alarma automática) | 47 038 | 76,2 % |
+| Buena intención (good intent) | 13 379 | 21,7 % |
+| Maliciosa | 1 327 | 2,1 % |
+
+**Por tipo de inmueble:** las viviendas concentran la mayoría. Los edificios de departamentos de 4 a 9 pisos (10 331) y de hasta 3 pisos (7 858) encabezan la lista, seguidos por casas unifamiliares (7 157). Las viviendas protegidas (sheltered housing, 4 721) y las residencias para adultos mayores (2 171) suman 6 892 falsas alarmas, el 11,2 % del total.
+
+**Por borough:**
+
+| Borough | Falsas alarmas | % de sus incidentes |
+|---|---|---|
+| Westminster | 4 957 | 57,2 % |
+| Camden | 3 166 | 52,8 % |
+| Lambeth | 2 719 | 43,9 % |
+| Kensington and Chelsea | 2 712 | 58,6 % |
+| Southwark | 2 556 | 42,6 % |
+| Tower Hamlets | 2 389 | 40,1 % |
+| Barnet | 2 295 | 46,0 % |
+| Croydon | 2 287 | 40,3 % |
+
+Westminster, Camden y Kensington and Chelsea no solo concentran más falsas alarmas en números absolutos, sino que en ellos más de la mitad de las atenciones son falsas alarmas, frente al 44,8 % de Londres.
+
+### 7.6. Síntesis
+
+La demanda creció de forma sostenida entre 2021 y 2025, y las falsas alarmas se mantuvieron cerca de la mitad de las atenciones. Esto hace más relevante orientar bien los recursos. El detalle de 2025 muestra dos prioridades que no coinciden territorialmente:
+
+- **Respuesta operativa:** los mayores tiempos de llegada se concentran en boroughs periféricos (Hillingdon, Bromley, Havering, Enfield, Redbridge, Richmond) y en la franja de la tarde.
+- **Prevención:** las falsas alarmas se concentran en boroughs céntricos (Westminster, Camden, Kensington and Chelsea), en alarmas automáticas y en edificios residenciales, incluidas viviendas para adultos mayores.
