@@ -369,17 +369,8 @@ Una fila por ResourceMobilisationId con CalYear entre 2021 y 2025 aceptado tras 
 
 SQL Server en la nube (MonsterASP)
 
-## 9. Acceso a la base de datos:
+## 9. Enlace a base de datos:
 
-[Ver base de datos](db80008.public.databaseasp.net/)
-
-    Server=db80008.public.databaseasp.net
-    Database=db80008
-    User Id=db80008_read01 
-    Password=fE?3@q9Z8!So
-    Encrypt=True 
-    TrustServerCertificate=True
-    MultipleActiveResultSets=True
 
 ## 10. Presentación (PPT):
 
