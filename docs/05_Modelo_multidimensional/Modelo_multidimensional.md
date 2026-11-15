@@ -70,7 +70,7 @@ Los tiempos publicados pueden estar sujetos a reglas de reporte. PerformanceRepo
 
 ## 6.7. Diagramas
 
-![Incidentes y Movilizaciones](docs/05_Modelo_multidimensional.jpeg)
+![Incidentes y Movilizaciones](docs/05_Modelo_multidimensional/Modelo_multidimensional.png)
 
 Los diagramas muestran los campos, las claves y las relaciones 1:N. La especificación de todos los campos está en el [diccionario del modelo](../04_Diccionario_datos/Diccionario_modelo.md).
 
