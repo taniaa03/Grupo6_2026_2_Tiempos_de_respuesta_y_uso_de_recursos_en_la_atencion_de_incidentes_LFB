@@ -202,9 +202,7 @@ Los tiempos publicados pueden estar sujetos a reglas de reporte. PerformanceRepo
 
 ### 6.7. Diagramas
 
-![Incidentes y cinco dimensiones compartidas](docs/05_Modelo_multidimensional/FactIncidente.png)
-
-![Movilizaciones y ocho dimensiones](docs/05_Modelo_multidimensional/FactMovilizacion.png)
+![Incidentes y Movilizaciones](docs/05_Modelo_multidimensional.jpeg)
 
 Los diagramas muestran los campos, las claves y las relaciones 1:N. La especificación de todos los campos está en el [diccionario del modelo](docs/04_Diccionario_datos/Diccionario_modelo.md).
 
