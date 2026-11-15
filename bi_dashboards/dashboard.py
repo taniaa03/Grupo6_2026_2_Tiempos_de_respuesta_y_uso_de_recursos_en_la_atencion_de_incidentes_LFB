@@ -113,7 +113,7 @@ def cargar_cubos():
     finally:
         conn.close()
     if incidentes.empty or movilizaciones.empty:
-        raise ValueError('Los cubos no tienen filas. Ejecute primero la carga y cubos.sql.')
+        raise ValueError('Las vistas de resumen no tienen filas. Ejecute primero la carga y vistas_resumen.sql.')
     return incidentes, movilizaciones
 
 
