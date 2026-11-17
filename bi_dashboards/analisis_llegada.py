@@ -16,7 +16,18 @@ TRAMOS = [
 ]
 
 
-def distribucion_llegada(conectar, anio, borough, grupo, subgrupo='todos'):
+def figura_llegada():
+    figura = go.Figure()
+    figura.update_layout(
+        margin=dict(l=12, r=16, t=10, b=42),
+        font=dict(family='Instrument Sans, Arial, sans-serif', size=12, color='#293636'),
+        paper_bgcolor='#fffdf7', plot_bgcolor='#fffdf7', separators=',\u202f',
+        showlegend=False, bargap=0.25, hoverlabel=dict(bgcolor='#193335', font_color='#ffffff'),
+    )
+    return figura
+
+
+def filtros_llegada(anio, borough, grupo, subgrupo):
     condiciones = []
     parametros = []
     for columna, valor in (
@@ -29,6 +40,11 @@ def distribucion_llegada(conectar, anio, borough, grupo, subgrupo='todos'):
             condiciones.append(f'{columna} = ?')
             parametros.append(valor)
 
+    return condiciones, parametros
+
+
+def distribucion_llegada(conectar, anio, borough, grupo, subgrupo='todos'):
+    condiciones, parametros = filtros_llegada(anio, borough, grupo, subgrupo)
     filtro = 'WHERE ' + ' AND '.join(condiciones) if condiciones else ''
     consulta = f"""
         WITH tiempos AS (
@@ -57,13 +73,7 @@ def distribucion_llegada(conectar, anio, borough, grupo, subgrupo='todos'):
     frecuencias = [filas.get(tramo, 0) for tramo in range(len(TRAMOS))]
     validos = sum(frecuencias)
     total = validos + filas.get(-1, 0)
-    figura = go.Figure()
-    figura.update_layout(
-        margin=dict(l=12, r=16, t=10, b=42),
-        font=dict(family='Instrument Sans, Arial, sans-serif', size=12, color='#293636'),
-        paper_bgcolor='#fffdf7', plot_bgcolor='#fffdf7', separators=',\u202f',
-        showlegend=False, bargap=0.25, hoverlabel=dict(bgcolor='#193335', font_color='#ffffff'),
-    )
+    figura = figura_llegada()
     if not validos:
         figura.update_xaxes(visible=False)
         figura.update_yaxes(visible=False)
@@ -104,3 +114,40 @@ def distribucion_llegada(conectar, anio, borough, grupo, subgrupo='todos'):
         f'{cola_texto} ({cola_pct} %) en 15 min o más.'
     )
     return figura, nota
+
+
+def llegada_por_franja(conectar, anio, borough, grupo, subgrupo='todos'):
+    condiciones, parametros = filtros_llegada(anio, borough, grupo, subgrupo)
+    condiciones.extend(('h.Hora BETWEEN 0 AND 23', 'i.PrimerArriboSeg > 0'))
+    filtro = ' AND '.join(condiciones)
+    consulta = f"""
+        SELECT h.Franja, AVG(CAST(i.PrimerArriboSeg AS float)) / 60.0 AS Minutos,
+               COUNT_BIG(*) AS Incidentes
+        FROM dbo.FactIncidente AS i
+        INNER JOIN dbo.DimHora AS h ON i.HoraKey = h.HoraKey
+        INNER JOIN dbo.DimGeografia AS g ON i.GeografiaKey = g.GeografiaKey
+        INNER JOIN dbo.DimTipoIncidente AS t ON i.TipoIncidenteKey = t.TipoIncidenteKey
+        WHERE {filtro}
+        GROUP BY h.Franja
+        ORDER BY MIN(h.Hora);
+    """
+    with closing(conectar()) as conexion:
+        filas = conexion.cursor().execute(consulta, *parametros).fetchall()
+
+    figura = figura_llegada()
+    if not filas:
+        figura.update_xaxes(visible=False)
+        figura.update_yaxes(visible=False)
+        figura.add_annotation(text='Sin datos para esta selección', x=0.5, y=0.5,
+                              xref='paper', yref='paper', showarrow=False)
+        return figura, 'Sin incidentes con hora de llamada y tiempo de primera llegada válidos.'
+
+    franjas, minutos, recuentos = zip(*filas)
+    figura.add_bar(
+        x=franjas, y=minutos, customdata=recuentos, marker_color='#245668',
+        hovertemplate='%{x}<br>%{y:.2f} min<br>%{customdata:,.0f} incidentes<extra></extra>',
+    )
+    figura.update_xaxes(title_text='Franja de llamada', type='category', fixedrange=True, automargin=True)
+    figura.update_yaxes(title_text='Minutos', rangemode='tozero', gridcolor='#e8e5db',
+                        zeroline=False, fixedrange=True, automargin=True)
+    return figura, 'Promedio desde la movilización hasta el arribo. Solo incidentes con hora y tiempo válidos.'

@@ -19,7 +19,7 @@ from consulta_sql import ErrorConsulta, ejecutar_consulta
 from actividad_horaria import actividad_horaria
 from analisis_costos import analizar_costos
 from analisis_despliegue import analizar_despliegue
-from analisis_llegada import distribucion_llegada
+from analisis_llegada import distribucion_llegada, llegada_por_franja
 from analisis_municipal import MINIMO_TIEMPOS, analizar_municipios
 from analisis_prevencion import analizar_prevencion
 from estaciones_mapa import estaciones_por_municipio
@@ -425,17 +425,6 @@ def panel_recursos():
         html.H2('Recursos y costos', className='titulo-seccion'),
         html.Div(id='recursos-indicadores', className='indicadores indicadores-recursos',
                  **{'aria-label': 'Indicadores de recursos'}),
-        html.Div([
-            html.Label('Vista de recursos', htmlFor='recursos-vista'),
-            dcc.Dropdown(
-                id='recursos-vista', value='uso', clearable=False, searchable=False,
-                options=[
-                    {'label': titulo, 'value': clave} for clave, titulo in (
-                        ('uso', 'Autobombas y movilizaciones'), ('costos', 'Costo nocional'),
-                    )
-                ],
-            ),
-        ], className='selector-medida recurso-medida', role='group', **{'aria-label': 'Vista de recursos'}),
         dcc.Loading(html.Div(id='recursos-contenido', className='recursos-contenido'),
                     delay_show=400, color='#245668'),
     ], id='recursos', className='panel panel-recursos objetivo-panel', role='tabpanel', tabIndex=0,
@@ -642,33 +631,13 @@ def panel_consultas():
             )),
         ], className='sql-diagrama'),
         html.Div([
+            html.Label('Consulta T-SQL', htmlFor='sql-editor'),
+            dcc.Textarea(id='sql-editor', value='', spellCheck=False),
             html.Div([
-                html.Label('Consulta T-SQL', htmlFor='sql-editor'),
-                dcc.Textarea(id='sql-editor', value='', spellCheck=False),
-                html.Div([
-                    html.Button('Ejecutar consulta', id='sql-ejecutar', type='button', className='boton boton-primario'),
-                    html.Span('Solo lectura · Se muestran hasta 200 filas', className='nota'),
-                ], className='sql-acciones'),
-            ], className='sql-formulario'),
-            html.Aside([
-                html.H3('Esquema del datamart'),
-                html.Ul([
-                    html.Li(html.Code('dbo.FactIncidente')),
-                    html.Li(html.Code('dbo.FactMovilizacion')),
-                ], className='sql-objetos'),
-                html.Details([
-                    html.Summary('Dimensiones y vistas'),
-                    html.Ul([
-                        html.Li(html.Code(f'dbo.{nombre}')) for nombre in (
-                            'DimFecha', 'DimHora', 'DimTipoIncidente', 'DimTipoPropiedad', 'DimGeografia',
-                            'DimEstacion', 'DimOrigenDespliegue', 'DimMotivoDemora',
-                            'CuboIncidentes', 'CuboMovilizaciones',
-                        )
-                    ]),
-                ], className='sql-esquema'),
-                html.A('Diccionario de campos', href='diccionario', className='enlace-esquema'),
-            ], className='sql-lateral'),
-        ], className='sql-area'),
+                html.Button('Ejecutar consulta', id='sql-ejecutar', type='button', className='boton boton-primario'),
+                html.Span('Solo lectura · Se muestran hasta 200 filas', className='nota'),
+            ], className='sql-acciones'),
+        ], className='sql-formulario'),
         html.Div([
             html.H3('Resultados'),
             html.Button('Descargar CSV', id='sql-exportar', disabled=True, type='button', className='boton'),
@@ -731,7 +700,7 @@ def panel_atenciones():
                 html.H3('Cambio por categoría de inmueble'),
                 html.P(id='evolucion-inmueble-detalle', className='nota'),
                 grafico('evolucion-inmueble'),
-            ], className='recurso perfil-inmuebles'),
+            ], className='recurso perfil-inmuebles comparacion-inmuebles'),
         ], className='recursos categorias-inmueble'),
         html.Div([
             html.Div([
@@ -806,6 +775,11 @@ def panel_respuesta():
                 dcc.Loading(grafico('distribucion-llegada'), delay_show=350, color='#245668'),
             ], className='recurso'),
         ], className='recursos subseccion'),
+        html.Div([
+            html.H3('Tiempo medio de primera llegada por franja horaria'),
+            html.P(id='llegada-franja-detalle', className='nota', role='status'),
+            dcc.Loading(grafico('llegada-por-franja'), delay_show=350, color='#245668'),
+        ], className='subseccion'),
         dcc.Loading(html.Div(id='demoras-contenido', className='subseccion'), delay_show=400, color='#245668'),
     ], id='respuesta', className='panel objetivo-panel', role='tabpanel', tabIndex=0,
         **{'data-objetivo': 'respuesta', 'aria-labelledby': 'pestana-respuesta'})
@@ -1162,11 +1136,11 @@ def actualizar_mapa(anio, borough, grupo, subgrupo, medida):
 
 @app.callback(
     Output('recursos-contenido', 'children'),
-    Input('recursos-vista', 'value'), Input('anio-filter', 'value'),
+    Input('anio-filter', 'value'),
     Input('borough-filter', 'value'), Input('grupo-filter', 'value'), Input('subgrupo-filter', 'value'),
     Input('objetivo-activo', 'data'),
 )
-def actualizar_recursos(vista, anio, borough, grupo, subgrupo, objetivo):
+def actualizar_recursos(anio, borough, grupo, subgrupo, objetivo):
     if objetivo != 'recursos':
         raise dash.exceptions.PreventUpdate
     try:
@@ -1174,13 +1148,6 @@ def actualizar_recursos(vista, anio, borough, grupo, subgrupo, objetivo):
         incidentes, movilizaciones = cargar_datos(grupo, subgrupo)
         incidentes = filtrar(incidentes, anio, borough, grupo)
         meses = incidentes[incidentes['Nivel'].eq('mes')]
-        if vista == 'costos':
-            mensual, municipal, tabla, nota = analizar_costos(meses)
-            return contenido_recursos([
-                ('Costo nocional por mes', mensual),
-                ('Costo nocional por municipio', municipal),
-            ], tabla, nota)
-
         envio = filtrar(movilizaciones, anio, borough, grupo)
         totales = envio[envio['Nivel'].eq('total')]
         zonas = meses[categoria_registrada(meses['Borough'])]
@@ -1193,13 +1160,18 @@ def actualizar_recursos(vista, anio, borough, grupo, subgrupo, objetivo):
             'Estaciones con más movilizaciones', estaciones,
             'Movilizaciones con estación y origen informados.',
         ), className='subseccion')
+        mensual, municipal, tabla_costos, nota_costos = analizar_costos(meses)
+        costos = html.Div(contenido_recursos([
+            ('Costo nocional por mes y tipo de incidente', mensual),
+            ('Costo nocional por municipio', municipal),
+        ], tabla_costos, nota_costos), className='subseccion')
         return contenido_recursos([
-            ('Horas de autobomba por mes y tipo', horas_mensuales(meses)),
+            ('Horas de autobomba por mes y tipo de incidente', horas_mensuales(meses)),
             ('Municipios con más horas de autobomba', barras(zonas, 'Borough', 'Horas', '#245668', ' h', 'Horas de autobomba')),
         ], tabla_uso(meses, totales), 'Las horas se calculan a partir de los minutos redondeados en la fuente. '
-           'Las participaciones se suman por incidente.', [grafico_estaciones])
+           'Las participaciones se suman por incidente.', [costos, grafico_estaciones])
     except (pyodbc.Error, pd.errors.DatabaseError, ValueError):
-        LOG.exception('No se pudo cargar la vista de recursos %s.', vista)
+        LOG.exception('No se pudieron cargar los recursos y costos.')
         return html.P('No se pudo consultar esta vista de recursos.', className='nota', role='status')
 
 
@@ -1271,12 +1243,17 @@ def actualizar_prevencion(anio, borough, grupo, subgrupo, objetivo):
 @app.callback(
     Output('actividad-por-hora', 'figure'), Output('horario-detalle', 'children'),
     Output('distribucion-llegada', 'figure'), Output('llegada-detalle', 'children'),
+    Output('llegada-por-franja', 'figure'), Output('llegada-franja-detalle', 'children'),
     Input('anio-filter', 'value'), Input('borough-filter', 'value'), Input('grupo-filter', 'value'),
     Input('subgrupo-filter', 'value'), Input('objetivo-activo', 'data'),
 )
 def actualizar_analisis(anio, borough, grupo, subgrupo, objetivo):
     salidas = []
-    for tab, analisis in (('atenciones', actividad_horaria), ('respuesta', distribucion_llegada)):
+    for tab, analisis in (
+        ('atenciones', actividad_horaria),
+        ('respuesta', distribucion_llegada),
+        ('respuesta', llegada_por_franja),
+    ):
         if objetivo != tab:
             salidas.extend((dash.no_update, dash.no_update))
             continue

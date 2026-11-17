@@ -139,6 +139,10 @@ def comparar_periodos(periodos, atenciones_anuales):
     if not categorias:
         return figura, 'No se registraron atenciones en los años de la comparación.'
 
+    # Deja espacio entre las etiquetas y los puntos cercanos a cero.
+    limite = max(maximo, 1)
+    figura.update_xaxes(range=[-0.08 * limite, 1.08 * limite])
+    figura.update_yaxes(ticklabelstandoff=8)
     datos = [[atenciones_anuales[periodo][categoria] for categoria in categorias] for periodo in periodos]
     if len(periodos) > 1:
         x, y = [], []
@@ -160,7 +164,7 @@ def comparar_periodos(periodos, atenciones_anuales):
     for periodo, cantidades, marca in zip(periodos, datos, marcas):
         figura.add_scatter(
             x=cantidades, y=categorias, text=etiquetas, customdata=detalles,
-            mode='markers', name=str(periodo), marker=marca, cliponaxis=False,
+            mode='markers', name=str(periodo), marker=marca,
             hovertemplate='%{text}<br>%{customdata}<extra></extra>',
         )
     nota = ' · '.join(f'{numero(atenciones_anuales[periodo].total())} en {periodo}' for periodo in periodos)
